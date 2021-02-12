@@ -1,0 +1,39 @@
+<html>
+<head>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@1.0.0/dist/tf.min.js"></script>
+    <script src="http://code.jquery.com/jquery-3.4.1.js"></script>
+    
+    <script src='snakegame_human.js'></script>
+    <script src='snakegame_ai.js'></script>
+    <script src='scoreboard.js'></script>
+    <script src='referee.js'></script>
+</head>
+<body>
+    <!--<div id='mainContent'></div>-->
+
+    <div id='display board'>
+        <!-- CANVASES/SCRIPTS FOR SCORE BOARDS -->
+        <div id='scoreBoards' style='text-align:center'>
+            <canvas id='score' width='400' height='80' style='padding:10px'></canvas>
+            <canvas id='score_ai' width='400' height='80' style='padding:10px'></canvas>
+            <canvas id='stats_pi' style='width:400px; height:80px; display:inline-block; padding:10px'></canvas>
+        </div>
+
+        <!-- CANVASES FOR HUMAN GAME, AI GAME, AND PLOTS -->
+        <div id='gameDivision' style='text-align:center' display='inline-block'>  
+            <canvas id='gc' width='400' height='400' style='padding:10px'></canvas>
+            <canvas id='gc_ai' width='400' height='400' style='padding:10px'></canvas>
+            <canvas id='stats' style='width:400px; height:400px; display:inline-block; padding:10px'></canvas>
+        </div>
+
+    </div>
+
+    
+    <!-- RUN AI GAME, HUMAN GAME, SCORE BOARD, AND
+    STATISTICS PLOTS SIMULTANEOUSLY FROM HERE -->
+    <script>
+        run()
+    </script>
+</body>
+</html>

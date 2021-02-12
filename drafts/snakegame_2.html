@@ -1,0 +1,177 @@
+<canvas id='gc' width='400' height='400'></canvas>
+<script>
+window.onload = function(){
+    canvas = document.getElementById('gc');
+    context = canvas.getContext('2d');
+    document.addEventListener('keydown',keyPush);
+    setInterval(game, 1000/15);
+}
+
+//Grid Properties
+borderWidth = 5;
+borderColor = 'blue';
+backgroundColor = 'black';
+    
+lineWidth = 1;
+lineColor = 'rgb(255, 255, 255)';
+
+gridSize = 20;   
+tileCount = gridSize;
+    
+gameOn = true; //denotes whether the snake is still alive and the game is running
+    
+foodColor = 'red';
+
+//Snake Properties
+xStart = Math.floor(0.5*gridSize);
+yStart = Math.floor(0.5*gridSize);
+xLoc = xStart; //start position
+yLoc = yStart;
+    
+xFood = 15; //food position
+yFood = 15;
+
+xVelStart = 0;
+yVelStart = 0;
+xVel = xVelStart; //snake velocity (starts in a stopped position)
+yVel = yVelStart; 
+    
+trail = [];
+tailNaught = 1;
+tail = tailNaught;
+
+    
+function game(){
+    //Update snake location
+    xLoc += xVel;
+    yLoc += yVel;
+    
+    
+    //Draw Background
+    context.fillStyle = backgroundColor;
+    context.fillRect(0, 0, canvas.width, canvas.height);
+    
+    
+    //Add Grid horizontal and vertical lines
+    context.beginPath(gridSize, 0);
+    context.lineWidth = String(lineWidth);
+    context.strokeStyle = lineColor
+    for (col = 1 ; col < tileCount ; col++){
+        context.moveTo(gridSize*col-lineWidth, 0);
+        context.lineTo(gridSize*col-lineWidth, canvas.width)
+    }
+    for (row = 1 ; row < tileCount ; row++){
+        context.moveTo(0, gridSize*row-lineWidth);
+        context.lineTo(canvas.height, gridSize*row-lineWidth)
+    }
+    context.stroke();
+    
+    
+    //Add Border
+    context.beginPath();
+    context.lineWidth = String(borderWidth);
+    context.strokeStyle = '#0076ff';
+    context.rect(0, 0, canvas.width, canvas.height);
+    context.stroke();
+
+    
+    //Draw Snake And Handle Tail and Food Collisions
+    context.fillStyle = 'lime';
+    for(var i=0; i<trail.length ; i++){
+        context.fillRect(trail[i].x*gridSize, trail[i].y*gridSize, gridSize - 2, gridSize - 2)
+        
+        //If the snakes tail overlaps with its head it bit itself, decrease length
+        if(trail[i].x==xLoc && trail[i].y == yLoc) {
+            //tail = tailNaught;
+            gameOn = false;
+        }
+    }
+    trail.push({x:xLoc, y:yLoc});
+    
+    //Trim trail down to length of tail if trial is longer than tail
+    while(trail.length>tail){
+        trail.shift();
+    }
+    
+    //If the snake finds an food, increase the length
+    if(xFood == xLoc && yFood == yLoc){
+        tail++;
+
+        //Respawn a new food
+        xFood = Math.floor(Math.random()*tileCount);
+        yfood = Math.floor(Math.random()*tileCount);
+        
+        //If food overlaps snake, choose different random location
+        count = 0;
+        while (count < trail.length){
+            for (loc in trail){
+                if (trail[loc].x == xFood && trail[loc].y == yFood){                    
+                    //Change Food Location
+                    xFood = Math.floor(Math.random()*tileCount);
+                    yfood = Math.floor(Math.random()*tileCount);
+                    count = 0;
+                }
+                count++
+            }
+        }
+    }
+
+    
+    //Draw Food
+    context.fillStyle = foodColor;
+    context.fillRect(xFood*gridSize, yFood*gridSize, gridSize - 2, gridSize - 2);
+    
+    
+    //Game over if snake goes out of bounds
+    if (xLoc < 0 || xLoc >= tileCount || yLoc < 0 || yLoc >= tileCount){
+        gameOn = false;
+    }
+      
+    
+    //HANDLE COLLISIONS
+    if (!gameOn){
+        //reset snake position and velocity
+        xLoc = xStart;
+        yLoc = yStart;
+        
+        xVel = xVelStart;
+        yVel = yVelStart;
+        
+        tail = tailNaught;
+        
+        gameOn = true;
+    }
+    
+}
+
+function keyPush(event) {
+    //Left Down Right Up key codes
+    switch(event.keyCode){
+        case 37:
+            if (xVel!=1){
+                xVel = -1;
+                yVel = 0;
+                }
+            break;
+        case 38:
+            if (yVel!=1){
+                xVel = 0;
+                yVel = -1;
+                }
+            break;
+        case 39:
+            if (xVel!=-1){
+                xVel = 1;
+                yVel = 0;
+                }
+            break;
+        case 40:
+            if (yVel!=-1){
+                xVel = 0;
+                yVel = 1;
+                }
+            break;
+    }
+}
+    
+</script>

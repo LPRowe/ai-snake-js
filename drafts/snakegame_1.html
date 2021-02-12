@@ -1,0 +1,88 @@
+<canvas id='gc' width='400' height='400'></canvas>
+<script>
+window.onload = function(){
+    canvas = document.getElementById('gc');
+    context = canvas.getContext('2d');
+    document.addEventListener('keydown',keyPush);
+    setInterval(game, 1000/15);
+}
+
+//Initial Conditions/Objects
+xLoc = 10; //start position
+yLoc = 10;
+gridSize = 20;
+tileCount = 20;
+xFood = 15;
+yFood = 15; //food position
+xVel = 0;
+yVel = 0; //snake velocity
+trail = [];
+tail = 5;
+    
+
+function game(){
+    //Update snake location
+    xLoc += xVel;
+    yLoc += yVel;
+    
+    //Draw Background
+    context.fillStyle = 'black';
+    context.fillRect(0, 0, canvas.width, canvas.height);
+    
+    //Draw Snake And Handle Tail and Food Collisions
+    context.fillStyle = 'lime';
+    for(var i=0; i<trail.length ; i++){
+        context.fillRect(trail[i].x*gridSize, trail[i].y*gridSize, gridSize - 2, gridSize - 2)
+        
+        //If the snakes tail overlaps with its head it bit itself, decrease length
+        if(trail[i].x==xLoc && trail[i].y == yLoc) {
+            tail = 5;
+        }
+    }
+    trail.push({x:xLoc, y:yLoc});
+    
+    //Trim trail down to length of tail if trial is longer than tail
+    while(trail.length>tail){
+        trail.shift();
+    }
+    
+    //If the snake finds an apple, increase the length
+    if(xFood == xLoc && yFood == yLoc){
+        tail++;
+
+        //Respawn a new apple
+        xFood = Math.floor(Math.random()*tileCount);
+        yfood = Math.floor(Math.random()*tilecount);
+    }
+
+    
+    //Draw Food
+    context.fillStyle = 'red';
+    context.fillRect(xFood*gridSize, yFood*gridSize, gridSize - 2, gridSize - 2);
+    
+    
+}
+
+function keyPush(event) {
+    //Left Down Right Up key codes
+    switch(event.keyCode){
+        case 37:
+            xVel = -1;
+            yVel = 0;
+            break;
+        case 38:
+            xVel = 0;
+            yVel = -1;
+            break;
+        case 39:
+            xVel = 1;
+            yVel = 0;
+            break;
+        case 40:
+            xVel = 0;
+            yVel = 1;
+            break;
+    }
+}
+    
+</script>
